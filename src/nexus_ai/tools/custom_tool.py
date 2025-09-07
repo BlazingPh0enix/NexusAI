@@ -1,19 +1,16 @@
 from crewai.tools import BaseTool
-from typing import Type
-from pydantic import BaseModel, Field
+from ddgs import DDGS
 
-
-class MyCustomToolInput(BaseModel):
-    """Input schema for MyCustomTool."""
-    argument: str = Field(..., description="Description of the argument.")
-
-class MyCustomTool(BaseTool):
-    name: str = "Name of my tool"
+class SearchTool(BaseTool):
+    name: str = "Web Search"
     description: str = (
-        "Clear description for what this tool is useful for, your agent will need this information to use it."
+        "Tool for performing web searches to find relevant and up-to-date information."
     )
-    args_schema: Type[BaseModel] = MyCustomToolInput
 
-    def _run(self, argument: str) -> str:
-        # Implementation goes here
-        return "this is an example of a tool output, ignore it and move along."
+    def _run(self, query: str) -> str:
+        try:
+            with DDGS() as ddgs:
+                results = [result for result in ddgs.text(query, max_results=5)]
+                return "\n".join(str(result) for result in results) if results else "No results found."
+        except Exception as e:
+            return f"An error occurred while performing the search: {e}"
