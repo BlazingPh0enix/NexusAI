@@ -1,17 +1,45 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Conduct thorough research on {company} within the {industry} industry.
+    Focus on:
+    1. The company's key offerings and products.
+    2. The company's strategic focus areas (e.g., market trends, competitive landscape).
+    3. The company's market positioning and unique value propositions.
+    4. Major industry trends related AI, ML and automation.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
+    A detailed summary document covering the company's key offerings, strategic focus areas,
+    and market positioning, along with major industry trends related to AI, ML, and automation.
   agent: researcher
 
-reporting_task:
+use_case_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Based on the research findings, generate a list of 5-7 relevant GenAI, AI, and ML use cases
+    that could benefit {company.
+    For each use case, provide a clear title, a brief description, the business area it impacts,
+    and the potential benefits it could bring to the company.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A list of 5-7 well-defined AI, GenAI, and ML use cases with descriptions, business impact and potential benefits.
+  agent: use_case_generator
+
+resource_collection_task:
+  description: >
+    For each proposed AI use case, identify and collect relevant public datasets, code repositories or open-source projects
+    that could be utilized to implement the use cases.
+    Focus on high-quality resources from platforms like Kaggle, HuggingFace, and GitHub.
+  expected_output: >
+    A markdown-formatted list where each item corresponds to a use case and contains clickable links to the resources found.
+  agent: resource_collector
+
+proposal_writing_task:
+  description: >
+    Compile the research findings, proposed AI use cases, and collected resources into a comprehensive
+    and well-structured final proposal for {company}.
+    The proposal should be in markdown format.
+    The proposal should include:
+    1. An executive summary.
+    2. A detailed overview of the company's current market position and industry trends.
+    3. A section for each proposed AI use case with descriptions and potential benefits.
+    4. A resources appendix with links to datasets and code repositories.
+  expected_output: >
+    A complete markdown-formatted technical proposal document ready for presentation.
+  agent: proposal_writer
