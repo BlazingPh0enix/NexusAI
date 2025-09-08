@@ -44,15 +44,16 @@ feasibility_analysis_task:
 
 proposal_writing_task:
   description: >
-    Compile the research findings, proposed AI use cases, and collected resources into a comprehensive
-    and beautifully formatted final proposal for {company}.
-    The proposal should be in markdown format with proper formatting of headings, subheadings, and bullet points.
-    The proposal should include the following sections:
-    1. An executive summary.
-    2. A detailed overview of the company's current market position and industry trends.
-    3. A section for each proposed AI use case with descriptions and potential benefits.
-    4. A feasibility analysis section summarizing the key findings from the feasibility analysis task.
-    5. A resources appendix with links to datasets and code repositories.
+    Compile all research, use cases, and analyses into a single, comprehensive proposal document.
+
+    **YOU MUST STRICTLY FOLLOW THIS STRUCTURE AND THESE RULES:**
+    1.  **Main Title (H1):** Start with a good title for the report such as but not limited to '# AI Transformation Proposal for {company}'.
+    2.  **Subtitle:** Add a brief, italicized one-sentence summary.
+    3.  **Main Sections (H2):** Use '##' for 'Executive Summary', 'Industry Analysis', 'Use Case Portfolio', 'Feasibility and Roadmap', and 'Resources Appendix'.
+    4.  **Subsections (H3):** Use '###' for each use case title or other sub-points.
+    5.  **Professional Tone:** The language must be formal, strategic, and persuasive, suitable for a corporate client.
+
+    **IMPORTANT:** Your response MUST be only the markdown report. DO NOT include any conversational text, introductory sentences, or closing remarks like 'Here is the proposal...' or 'If you would like...'. The output must start directly with the H1 title and end immediately after the last line of the appendix.
   expected_output: >
-    A complete, polished and beautifully formatted markdown-formatted technical proposal document ready for presentation.
+    A complete, polished, and perfectly formatted markdown proposal. The document must begin with the '# Title' and end with the last resource link, with absolutely no extra text before or after.
   agent: proposal_writer
