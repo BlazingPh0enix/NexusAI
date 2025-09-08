@@ -1,6 +1,9 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from nexus_ai.tools.custom_tool import SearchTool
+# To make use of the custom search tool that uses DuckDuckGo
+# uncomment the following line and comment out the SerperDevTool line
+# from nexus_ai.tools.custom_tool import SearchTool
+from nexus_ai.tools.search_tool import SafeSerperSearchTool
 
 @CrewBase
 class NexusAi():
@@ -9,7 +12,10 @@ class NexusAi():
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
-    web_search_tool = SearchTool()
+    # To make use of the custom search tool that uses DuckDuckGo
+    # uncomment the following line and comment out the SerperDevTool line
+    # web_search_tool = SearchTool()
+    web_search_tool = SafeSerperSearchTool()
 
     @agent
     def researcher(self) -> Agent:
