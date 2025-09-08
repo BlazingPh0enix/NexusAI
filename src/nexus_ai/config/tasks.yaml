@@ -40,6 +40,7 @@ feasibility_analysis_task:
   expected_output: >
     A detailed implementation feasibility report for each use case, including risk assessment,
     phased implementation plans, and governance recommendations.
+  agent: feasibility_analyst
 
 proposal_writing_task:
   description: >

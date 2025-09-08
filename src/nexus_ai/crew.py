@@ -91,8 +91,8 @@ class NexusAi():
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher(), self.use_case_generator(), self.resource_collector(), self.proposal_writer(), self.feasibility_analyst()],
-            tasks=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.proposal_writing_task(), self.feasibility_analysis_task()],
+            agents=[self.researcher(), self.use_case_generator(), self.resource_collector(), self.feasibility_analyst(), self.proposal_writer()],
+            tasks=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.feasibility_analysis_task(), self.proposal_writing_task()],
             process=Process.sequential,
             verbose=True
         )
