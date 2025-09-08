@@ -33,13 +33,13 @@ resource_collection_task:
 proposal_writing_task:
   description: >
     Compile the research findings, proposed AI use cases, and collected resources into a comprehensive
-    and well-structured final proposal for {company}.
-    The proposal should be in markdown format.
-    The proposal should include:
+    and beautifully formatted final proposal for {company}.
+    The proposal should be in markdown format with proper formatting of headings, subheadings, and bullet points.
+    The proposal should include the following sections:
     1. An executive summary.
     2. A detailed overview of the company's current market position and industry trends.
     3. A section for each proposed AI use case with descriptions and potential benefits.
     4. A resources appendix with links to datasets and code repositories.
   expected_output: >
-    A complete markdown-formatted technical proposal document ready for presentation.
+    A complete, polished and beautifully formatted markdown-formatted technical proposal document ready for presentation.
   agent: proposal_writer
