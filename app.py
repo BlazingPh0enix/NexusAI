@@ -1,120 +1,100 @@
 import streamlit as st
-import io
 import pypandoc
-import urllib.parse  # Required for the new feature
+import tempfile
+import os
 from src.nexus_ai.crew import NexusAi
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="NexusAI Strategy Generator",
-    page_icon="🤖",
-    layout="wide"
+    page_title="NexusAI Strategic Proposal Generator",
+    layout="wide",
 )
 
-# --- App Title and Description ---
-st.title("🤖 NexusAI Strategy Generator")
-st.markdown("""
-Welcome to NexusAI! This tool leverages a crew of AI agents to conduct in-depth market research
-and generate a comprehensive AI adoption strategy for any company.
-""")
+# --- App Header ---
+st.title("NexusAI")
+st.subheader("Your AI-Powered Strategic Proposal Generator")
+st.markdown("---")
 
-# --- Sidebar for Inputs ---
+# --- Sidebar for Inputs & Control ---
 with st.sidebar:
-    st.header("🔍 Analysis Inputs")
-    company = st.text_input("Enter the Company Name", placeholder="e.g., Nissan")
-    industry = st.text_input("Enter the Industry", placeholder="e.g., Automotive")
-    run_button = st.button("Generate AI Strategy", type="primary", use_container_width=True)
+    st.header("Configuration")
+    company = st.text_input("Company Name", placeholder="e.g., Apple")
+    industry = st.text_input("Industry", placeholder="e.g., Technology")
+    
+    st.markdown("---")
+    run_button = st.button("Generate Proposal", type="primary", use_container_width=True)
+    st.markdown("""
+    <div style="font-size: 0.8em; text-align: center; margin-top: 1em;">
+        Enter a company and industry to generate a bespoke AI strategy proposal.
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- Main Content Area ---
 
-# Initialize session state to store the report
-if 'report' not in st.session_state:
+# Initialize session state
+if "report" not in st.session_state:
     st.session_state.report = None
+if "company" not in st.session_state:
+    st.session_state.company = ""
 
+# Main logic for running the crew
 if run_button:
     if not company or not industry:
-        st.error("Please provide both a company and an industry.")
+        st.error("Please provide both a company and an industry to proceed.")
     else:
-        # Show a spinner while the crew is working
-        with st.spinner(f"🤖 The AI crew is analyzing {company}. This may take a few minutes..."):
+        with st.spinner(f"The AI crew is building a strategy for {company}... This might take a few minutes."):
             try:
-                # Define the inputs for the crew
-                inputs = {
-                    'company': company,
-                    'industry': industry
-                }
-                # Kick off the crew's work
+                inputs = {'company': company, 'industry': industry}
                 crew_result = NexusAi().crew().kickoff(inputs=inputs)
-                st.session_state.report = crew_result
+                st.session_state.report = str(crew_result)
+                st.session_state.company = company
             except Exception as e:
-                st.error(f"An error occurred while running the crew: {e}")
+                st.error(f"An unexpected error occurred: {e}")
 
-# --- Display Report and Action Buttons ---
+# Display the generated report and actions
 if st.session_state.report:
     st.markdown("---")
-    st.subheader("Generated AI Strategy Proposal")
-    st.markdown(st.session_state.report)
+    st.header(f"✨ AI Strategy Proposal for {st.session_state.company}")
+    
+    # Tabbed layout for the report
+    tab1, tab2 = st.tabs(["Final Report", "Raw Markdown"])
+
+    with tab1:
+        st.markdown(st.session_state.report)
+
+    with tab2:
+        st.code(st.session_state.report, language="markdown")
 
     st.markdown("---")
-    st.subheader("📄 Actions")
+    st.header("Actions")
 
-    # --- Create a two-column layout for the buttons ---
-    col1, col2 = st.columns(2)
-
-    # --- Column 1: Download as DOCX ---
-    with col1:
-        try:
-            docx_bytes = pypandoc.convert_text(
-                str(st.session_state.report),
+    # --- DOCX Download Logic (FIXED) ---
+    try:
+        # Create a temporary file to write the DOCX to
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
+            pypandoc.convert_text(
+                st.session_state.report,
                 'docx',
-                format='md'
+                format='md',
+                outputfile=temp_docx.name
             )
-            docx_io = io.BytesIO(docx_bytes.encode() if isinstance(docx_bytes, str) else docx_bytes)
+            # Read the bytes from the temporary file
+            with open(temp_docx.name, "rb") as f:
+                docx_bytes = f.read()
 
-            st.download_button(
-                label="📄 Download as .docx",
-                data=docx_io,
-                file_name=f"AI_Proposal_for_{company}.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                use_container_width=True
-            )
-        except Exception as e:
-            st.error(f"Could not generate DOCX. Please ensure Pandoc is installed. Error: {e}")
-    
-    # --- Column 2: View in New Tab (NEW FEATURE) ---
-    with col2:
-        try:
-            # Convert markdown to HTML, adding some basic styling for better readability
-            html_body = pypandoc.convert_text(str(st.session_state.report), 'html', format='md')
-            html_styled = f"""
-            <html>
-                <head>
-                    <title>AI Proposal for {company}</title>
-                    <style>
-                        body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                               line-height: 1.6; padding: 2em; max-width: 900px; margin: auto; color: #333; }}
-                        h1, h2, h3 {{ color: #1E293B; }}
-                        code {{ background-color: #f0f0f0; padding: 2px 5px; border-radius: 4px; }}
-                        a {{ color: #0068c9; text-decoration: none; }}
-                        a:hover {{ text-decoration: underline; }}
-                    </style>
-                </head>
-                <body>
-                    {html_body}
-                </body>
-            </html>
-            """
-            
-            # Create a data URI for the HTML content
-            data_uri = "data:text/html;charset=utf-8," + urllib.parse.quote(html_styled)
-            
-            # Create the HTML for the button-like link
-            link_html = f'<a href="{data_uri}" target="_blank" style="display: inline-block; padding: 0.5em 1em; background-color: #333; color: white; text-align: center; text-decoration: none; border-radius: 0.25rem; width: 100%; box-sizing: border-box;">🌐 View in New Tab</a>'
-            
-            st.markdown(link_html, unsafe_allow_html=True)
+        st.download_button(
+            label="📄 Download as .docx",
+            data=docx_bytes,
+            file_name=f"AI_Proposal_for_{st.session_state.company}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True
+        )
+        
+        # Clean up the temporary file
+        os.unlink(temp_docx.name)
 
-        except Exception as e:
-            st.error(f"Could not generate HTML view. Please ensure Pandoc is installed. Error: {e}")
+    except Exception as e:
+        st.error(f"Could not generate DOCX. Please ensure Pandoc is installed. Error: {e}")
 
 else:
-    st.info("Please enter a company and industry in the sidebar and click 'Generate' to begin.")
+    st.info("Enter a company and industry in the sidebar to generate your strategic proposal.")
