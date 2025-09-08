@@ -10,7 +10,7 @@ class SearchTool(BaseTool):
     def _run(self, query: str) -> str:
         try:
             with DDGS() as ddgs:
-                results = [result for result in ddgs.text(query, max_results=5)]
+                results = [result for result in ddgs.text(query, max_results=10)]
                 return "\n".join(str(result) for result in results) if results else "No results found."
         except Exception as e:
             return f"An error occurred while performing the search: {e}"
