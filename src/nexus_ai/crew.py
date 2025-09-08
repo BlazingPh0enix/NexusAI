@@ -67,7 +67,7 @@ class NexusAi():
     @task
     def proposal_writing_task(self) -> Task:
         return Task(
-            config=self.tasks_config['proposal_task'], # type: ignore[index]
+            config=self.tasks_config['proposal_writing_task'], # type: ignore[index]
             agent=self.proposal_writer(),
             context=[self.research_task(), self.use_case_task(), self.resource_collection_task()],
             output_file="output/final_proposal.md"
