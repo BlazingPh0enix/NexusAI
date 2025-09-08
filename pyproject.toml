@@ -9,6 +9,8 @@ dependencies = [
     "ddgs>=9.5.5",
     "pypandoc>=1.15",
     "streamlit>=1.49.1",
+    "tavily-python>=0.7.11",
+    "pysqlite3-binary",
 ]
 
 [project.scripts]
