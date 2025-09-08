@@ -30,6 +30,17 @@ resource_collection_task:
     A markdown-formatted list where each item corresponds to a use case and contains clickable links to the resources found.
   agent: resource_collector
 
+feasibility_analysis_task:
+  description: >
+    For the list of proposed AI use cases, evaluate the technical feasibility and potential risks associated with their implementation at {company}.
+    Develop a High-level phased implementation plan for each use case, including:
+    1. A summary of key risks and challenges.
+    2. High-level phased implementation plan.
+    3. Recommendation for a governance framework to ensure ethical and responsible AI use.
+  expected_output: >
+    A detailed implementation feasibility report for each use case, including risk assessment,
+    phased implementation plans, and governance recommendations.
+
 proposal_writing_task:
   description: >
     Compile the research findings, proposed AI use cases, and collected resources into a comprehensive
@@ -39,7 +50,8 @@ proposal_writing_task:
     1. An executive summary.
     2. A detailed overview of the company's current market position and industry trends.
     3. A section for each proposed AI use case with descriptions and potential benefits.
-    4. A resources appendix with links to datasets and code repositories.
+    4. A feasibility analysis section summarizing the key findings from the feasibility analysis task.
+    5. A resources appendix with links to datasets and code repositories.
   expected_output: >
     A complete, polished and beautifully formatted markdown-formatted technical proposal document ready for presentation.
   agent: proposal_writer

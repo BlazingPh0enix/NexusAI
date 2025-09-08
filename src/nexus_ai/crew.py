@@ -35,6 +35,13 @@ class NexusAi():
         )
     
     @agent
+    def feasibility_analyst(self) -> Agent:
+        return Agent(
+            config=self.agents_config['feasibility_analyst'], # type: ignore[index]
+            verbose=True
+        )
+    
+    @agent
     def proposal_writer(self) -> Agent:
         return Agent(
             config=self.agents_config['proposal_writer'], # type: ignore[index]
@@ -65,19 +72,27 @@ class NexusAi():
         )
     
     @task
+    def feasibility_analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['feasibility_analysis_task'], # type: ignore[index]
+            agent=self.feasibility_analyst(),
+            context=[self.use_case_task()]
+        )
+
+    @task
     def proposal_writing_task(self) -> Task:
         return Task(
             config=self.tasks_config['proposal_writing_task'], # type: ignore[index]
             agent=self.proposal_writer(),
-            context=[self.research_task(), self.use_case_task(), self.resource_collection_task()],
+            context=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.feasibility_analysis_task()],
             output_file="output/final_proposal.md"
         )
     
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher(), self.use_case_generator(), self.resource_collector(), self.proposal_writer()],
-            tasks=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.proposal_writing_task()],
+            agents=[self.researcher(), self.use_case_generator(), self.resource_collector(), self.proposal_writer(), self.feasibility_analyst()],
+            tasks=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.proposal_writing_task(), self.feasibility_analysis_task()],
             process=Process.sequential,
             verbose=True
         )
