@@ -47,7 +47,7 @@ proposal_writing_task:
     Compile all research, use cases, and analyses into a single, comprehensive proposal document.
 
     **YOU MUST STRICTLY FOLLOW THIS STRUCTURE AND THESE RULES:**
-    1.  **Main Title (H1):** Start with a good title for the report such as but not limited to '# AI Transformation Proposal for {company}'.
+    1.  **Main Title (H1):** Start with a good title for the report.
     2.  **Subtitle:** Add a brief, italicized one-sentence summary.
     3.  **Main Sections (H2):** Use '##' for 'Executive Summary', 'Industry Analysis', 'Use Case Portfolio', 'Feasibility and Roadmap', and 'Resources Appendix'.
     4.  **Subsections (H3):** Use '###' for each use case title or other sub-points.
