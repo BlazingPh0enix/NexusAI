@@ -1,59 +1,63 @@
 research_task:
   description: >
-    Conduct thorough research on {company} within the {industry} industry.
-    Focus on:
-    1. The company's key offerings and products.
-    2. The company's strategic focus areas (e.g., market trends, competitive landscape).
-    3. The company's market positioning and unique value propositions.
-    4. Major industry trends related AI, ML and automation.
+    1. **Initiate Research:** Conduct a detailed analysis of {company} within the {industry} industry.
+    2. **Utilize Search Tool:** You MUST use your web search tool to find the most current information available. Do not rely on internal knowledge.
+    3. **Gather Key Information:** Focus on the company's latest strategic initiatives, key products, market positioning, and recent challenges or successes.
+    4. **Analyze Industry Trends:** Identify major AI-related trends and how competitors are leveraging them.
   expected_output: >
-    A detailed summary document covering the company's key offerings, strategic focus areas,
-    and market positioning, along with major industry trends related to AI, ML, and automation.
-  agent: researcher
+    A comprehensive summary document organized into the following sections:
+    - **Company Overview:** A brief of {company}'s core business.
+    - **Strategic Focus:** Key goals and initiatives from recent reports or news.
+    - **Market Position:** An analysis of their standing against competitors.
+    - **AI Industry Trends:** A summary of how AI is impacting the {industry} industry.
 
 use_case_task:
   description: >
-    Based on the research findings, generate a list of 5-7 relevant GenAI, AI, and ML use cases
-    that could benefit {company.
-    For each use case, provide a clear title, a brief description, the business area it impacts,
-    and the potential benefits it could bring to the company.
+    Based on the detailed analysis from the Lead Market Analyst, generate a list of 5 to 7 high-impact AI/GenAI use cases for {company}.
+    Each use case must be clearly defined with:
+    - A descriptive title.
+    - A paragraph explaining the solution and how it addresses a specific need or opportunity identified in the research.
+    - The primary business area it impacts (e.g., Operations, Marketing, Customer Experience).
+    - A bulleted list of 2-3 potential key benefits (e.g., increased efficiency by X%, cost reduction, new revenue stream).
   expected_output: >
-    A list of 5-7 well-defined AI, GenAI, and ML use cases with descriptions, business impact and potential benefits.
-  agent: use_case_generator
+    A structured list of 5-7 AI use cases, each containing a title, detailed description, business area, and a list of benefits.
 
 resource_collection_task:
   description: >
     For each proposed AI use case, identify and collect relevant public datasets, code repositories or open-source projects
     that could be utilized to implement the use cases.
     Focus on high-quality resources from platforms like Kaggle, HuggingFace, and GitHub.
+
+    **IMPORTANT:** Your output MUST be in markdown format, with each resource presented as a clickable link. DO NOT include any additional text or explanations.
   expected_output: >
-    A markdown-formatted list where each item corresponds to a use case and contains clickable links to the resources found.
-  agent: resource_collector
+    A markdown-formatted list where each item is a clickable link to a dataset or code repository, grouped under the corresponding use case title.
+    Example:
+    '### Use Case: Predictive Maintenance
+    - [Link to Kaggle Dataset](https://www.kaggle.com/...)
+    - [Link to GitHub Repo](https://github.com/...)'
 
 feasibility_analysis_task:
   description: >
-    For the list of proposed AI use cases, evaluate the technical feasibility and potential risks associated with their implementation at {company}.
-    Develop a High-level phased implementation plan for each use case, including:
-    1. A summary of key risks and challenges.
-    2. High-level phased implementation plan.
-    3. Recommendation for a governance framework to ensure ethical and responsible AI use.
+    Analyze the list of proposed AI use cases and develop a high-level feasibility and risk report.
+    Your report must include:
+    1.  **Risk Summary:** A brief overview of potential risks like data privacy, implementation complexity, and regulatory hurdles.
+    2.  **Phased Roadmap:** A high-level, 3-phase implementation roadmap (e.g., Phase 1: Foundational Projects, Phase 2: Scaling Solutions, Phase 3: Transformative Initiatives).
+    3.  **Governance Model:** A recommendation for an AI governance framework to ensure responsible and ethical deployment.
   expected_output: >
-    A detailed implementation feasibility report for each use case, including risk assessment,
-    phased implementation plans, and governance recommendations.
-  agent: feasibility_analyst
+    A concise report detailing the risks, a phased implementation roadmap, and a recommended governance model for the proposed AI initiatives.
 
 proposal_writing_task:
   description: >
-    Compile all research, use cases, and analyses into a single, comprehensive proposal document.
+    Compile all the provided analyses (research, use cases, resources, feasibility) into a single, cohesive, and professionally formatted proposal document.
 
     **YOU MUST STRICTLY FOLLOW THIS STRUCTURE AND THESE RULES:**
-    1.  **Main Title (H1):** Start with a good title for the report.
-    2.  **Subtitle:** Add a brief, italicized one-sentence summary.
-    3.  **Main Sections (H2):** Use '##' for 'Executive Summary', 'Industry Analysis', 'Use Case Portfolio', 'Feasibility and Roadmap', and 'Resources Appendix'.
-    4.  **Subsections (H3):** Use '###' for each use case title or other sub-points.
-    5.  **Professional Tone:** The language must be formal, strategic, and persuasive, suitable for a corporate client.
+    1.  **Main Title (H1):** Start with a suitable title for the proposal with '#' followed by the title text.
+    2.  **Subtitle:** Add a brief, italicized one-sentence summary underneath the title.
+    3.  **Main Sections (H2):** Use '##' for '1. Executive Summary', '2. Industry and Company Analysis', '3. Proposed AI Use Case Portfolio', '4. Feasibility and Implementation Roadmap', and '5. Resources Appendix'.
+    4.  **Resource Appendix Rule:** For the '5. Resources Appendix' section, you MUST use the **exact, verbatim markdown output** provided by the Resource Asset Collector. Do not modify, summarize, or add to it. Your job is to simply insert the list of links provided.
+    5.  **Subsections (H3):** Use '###' for each individual use case title within Section 3 and Section 5.
+    6.  **Professional Tone:** The language must be formal, strategic, and persuasive.
 
     **IMPORTANT:** Your response MUST be only the markdown report. DO NOT include any conversational text, introductory sentences, or closing remarks like 'Here is the proposal...' or 'If you would like...'. The output must start directly with the H1 title and end immediately after the last line of the appendix.
   expected_output: >
-    A complete, polished, and perfectly formatted markdown proposal. The document must begin with the '# Title' and end with the last resource link, with absolutely no extra text before or after.
-  agent: proposal_writer
+    A complete, polished, and perfectly formatted markdown proposal that is ready for client presentation, strictly adhering to the specified structure.
