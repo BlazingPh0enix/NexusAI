@@ -1,9 +1,9 @@
+import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-# To make use of the custom search tool that uses DuckDuckGo
-# uncomment the following line and comment out the SerperDevTool line
-# from nexus_ai.tools.custom_tool import SearchTool
-from nexus_ai.tools.search_tool import SafeSerperSearchTool
+from nexus_ai.tools.search_tool import DuckDuckGoSearchTool
+from crewai_tools import TavilySearchTool, SerperDevTool
+from dotenv import load_dotenv
 
 @CrewBase
 class NexusAi():
@@ -11,17 +11,24 @@ class NexusAi():
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
+    load_dotenv()
 
-    # To make use of the custom search tool that uses DuckDuckGo
-    # uncomment the following line and comment out the SerperDevTool line
-    # web_search_tool = SearchTool()
-    web_search_tool = SafeSerperSearchTool()
+    ddgs_search_tool = DuckDuckGoSearchTool()
+
+    # # Uncomment and configure if you have Tavily or SerperDev API keys
+    # tavily_search_tool = TavilySearchTool(
+    #     max_results=10,
+    #     api_key=os.getenv("TAVILY_API_KEY", ),
+    #     include_answer=True,
+    # )
+
+    # serper_search_tool = SerperDevTool()
 
     @agent
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], # type: ignore[index]
-            tools=[self.web_search_tool],
+            tools=[self.ddgs_search_tool],
             verbose=True
         )
     
@@ -36,7 +43,7 @@ class NexusAi():
     def resource_collector(self) -> Agent:
         return Agent(
             config=self.agents_config['resource_collector'], # type: ignore[index]
-            tools=[self.web_search_tool],
+            tools=[self.ddgs_search_tool],
             verbose=True
         )
     
