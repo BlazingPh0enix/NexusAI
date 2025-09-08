@@ -1,64 +1,83 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
-from typing import List
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from nexus_ai.tools.custom_tool import SearchTool
 
 @CrewBase
 class NexusAi():
     """NexusAi crew"""
 
-    agents: List[BaseAgent]
-    tasks: List[Task]
+    agents_config = 'config/agents.yaml'
+    tasks_config = 'config/tasks.yaml'
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
+    web_search_tool = SearchTool()
+
     @agent
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], # type: ignore[index]
+            tools=[self.web_search_tool],
             verbose=True
         )
-
+    
     @agent
-    def reporting_analyst(self) -> Agent:
+    def use_case_generator(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
+            config=self.agents_config['use_case_generator'], # type: ignore[index]
             verbose=True
         )
-
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
+    
+    @agent
+    def resource_collector(self) -> Agent:
+        return Agent(
+            config=self.agents_config['resource_collector'], # type: ignore[index]
+            tools=[self.web_search_tool],
+            verbose=True
+        )
+    
+    @agent
+    def proposal_writer(self) -> Agent:
+        return Agent(
+            config=self.agents_config['proposal_writer'], # type: ignore[index]
+            verbose=True
+        )
+    
     @task
     def research_task(self) -> Task:
         return Task(
             config=self.tasks_config['research_task'], # type: ignore[index]
+            agent=self.researcher()
         )
-
+    
     @task
-    def reporting_task(self) -> Task:
+    def use_case_task(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config['use_case_task'], # type: ignore[index]
+            agent=self.use_case_generator(),
+            context=[self.research_task()]
         )
-
+    
+    @task
+    def resource_collection_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['resource_collection_task'], # type: ignore[index]
+            agent=self.resource_collector(),
+            context=[self.use_case_task()]
+        )
+    
+    @task
+    def proposal_writing_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['proposal_task'], # type: ignore[index]
+            agent=self.proposal_writer(),
+            context=[self.research_task(), self.use_case_task(), self.resource_collection_task()],
+            output_file="output/final_proposal.md"
+        )
+    
     @crew
     def crew(self) -> Crew:
-        """Creates the NexusAi crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
-
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=[self.researcher(), self.use_case_generator(), self.resource_collector(), self.proposal_writer()],
+            tasks=[self.research_task(), self.use_case_task(), self.resource_collection_task(), self.proposal_writing_task()],
             process=Process.sequential,
-            verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            verbose=True
         )
